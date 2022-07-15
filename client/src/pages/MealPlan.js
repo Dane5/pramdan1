@@ -3,69 +3,74 @@ import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Box, Button } from "../styles";
+import UpdateMeals from "../components/UpdateMeals.js";
+import Meal from "../components/Meal"
 
 function MealPlan(meal) {
-  const [meals, setmeals] = useState([]);
+  const [meals, setMeals] = useState([]);
+  const [visible, setVisible] = useState(false)
 
-  function handleDelete(){
-    fetch("/meals/",{
+
+
+  function handleDelete(id){
+    fetch(`/meals/${id}`
+,{
       method:'DELETE'
     })
-    .then(res => {
-      if(res.ok){
-      res.json().then(console.log)
-    } else {
-      res.json().then(console.log)
-    }
+    const updatedMeals = meals.filter((meal) => {
+        return meal.id !== id
+      })
+      setMeals(updatedMeals)
+}
+
+function handleMealUpdate(id, mealInput){
+    setVisible(!visible)
+
+    const configObj = {
+        id: id,
+        title: mealInput.title,
+        directions: mealInput.directions,
+        prep_time: mealInput.prep_time,
+        user_id: 1
+      }
+    
+    fetch(`/meals/${id}`
+    , 
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type" : "application/json"
+      },
+      body: JSON.stringify(configObj)
     })
-  }
+    .then((r) => r.json())
+    .then((data) => {
+        console.log(data)
+        const updatedMeals = meals.map((meal) => {
+            if (meal.id === data.id) {
+              return data
+            } else {
+              return meal
+            }
+          })
+          setMeals(updatedMeals)
+    })
+}
 
-//   function handleUpdatedMeals(updateMeals){
-//     fetch("/meals/",{
-//         method: 'PATCH'
-//     })
-//     .then(res => {
-//         if(res.ok){
-//         res.json().then(console.log)
-//       } else {
-//         res.json().then(console.log)
-//       }
-
-//     const updateMeals = meals.map((mealUpdate)=> meals.id === updatedMeals.id ? updatedMeals : mealUpdate
-//     )
-
-//     setmeals(updatedMeals);
-//   }}
-//   onClick={handleUpdatedMeals}
+  
 
 
   useEffect(() => {
     fetch("/meals")
       .then((r) => r.json())
-      .then(setmeals);
+      .then(setMeals);
   }, []);
 
   return (
     <Wrapper>
       {meals.length > 0 ? (
         meals.map((meal) => (
-          <Meal key={meal.id}>
-            <Box>
-            <Button variant="outline">
-              EDIT
-              </Button>
-              <h2>{meal.title}</h2>
-              <p>
-                <em>Prep Time: {meal.Prep_time} minutes</em>
-                &nbsp;·&nbsp;
-                <cite>By {meal.user.username}</cite>
-              </p>
-              <ReactMarkdown>{meal.instructions}</ReactMarkdown>
-              <Button onClick={handleDelete}>
-              DELETE
-              </Button>
-            </Box>
-          </Meal>
+            <Meal visible={visible} setVisible={setVisible} meal={meal} handleDelete={handleDelete} handleMealUpdate={handleMealUpdate} />
         ))
       ) : (
         <>
@@ -84,8 +89,8 @@ const Wrapper = styled.section`
   margin: 40px auto;
 `;
 
-const Meal = styled.article`
-  margin-bottom: 24px;
-`;
+// const Meal = styled.article`
+//   margin-bottom: 24px;
+// `;
 
 export default MealPlan;

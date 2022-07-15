@@ -9,32 +9,25 @@ class MealsController < ApplicationController
       end
 
       def destroy
-        meal.delete
-    rescue ActiveRecord::RecordNotFound => e
-        render json: { error: e.to_s }, status: :not_found
-      else
-        render :delete
-end
+        meal = Meal.find(params[:id])
+        meal.destroy
+        head :no_content
+      end
+      
 
-def update
-    begin
-      meal.update_attributes(meal_params)
-    rescue ActiveRecord::RecordNotFound
-      render( json: ["Unable to update"], status: 503)
-    else
-      render :show
-    end
+def update 
+    meal = Meal.find(params[:id])
+    meal.update(meal_params)
+    render json: meal, status: :ok
   end
 
+  def show
+    meal = Meal.find(params[:id])
+    render json: meal, status: :ok
+  end
+  
 
-      #   meal = Meal.find_by(id: params[:id])
-      #   if meal
-      #     meal.destroy
-      #     head :no_content
-        # else
-        #   render json: { error: "Meal not found" }, status: :not_found
-        # end
-      # end
+
     
       private
 
@@ -43,6 +36,6 @@ def update
       end
     
       def meal_params
-        params.permit(:title, :directions, :prep_time)
+        params.permit(:title, :directions, :prep_time, :user_id)
       end
 end

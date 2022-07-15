@@ -9,3 +9,6 @@
 # puts "start seeding"
 # meal1 = Meal.create(user: '', title: "abzyJ+23", directions: "peanut butter and jelly", prep_time: "5")
 # puts "seeding complete"
+
+User.create(username: "Dane", password_digest: "Dane")
+Meal.create(title: "pb and j", directions: "add peanut butter and jelly and toast the bread", prep_time: 5, user_id: 1)
