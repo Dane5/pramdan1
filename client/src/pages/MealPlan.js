@@ -20,23 +20,23 @@ function MealPlan(meal) {
     })
   }
 
-  function handleUpdatedMeals(updateMeals){
-    fetch("/meals/",{
-        method: 'PATCH'
-    })
-    .then(res => {
-        if(res.ok){
-        res.json().then(console.log)
-      } else {
-        res.json().then(console.log)
-      }
+//   function handleUpdatedMeals(updateMeals){
+//     fetch("/meals/",{
+//         method: 'PATCH'
+//     })
+//     .then(res => {
+//         if(res.ok){
+//         res.json().then(console.log)
+//       } else {
+//         res.json().then(console.log)
+//       }
 
-    const updateMeals = meals.map((mealUpdate)=> meals.id === updatedMeals.id ? updatedMeals : mealUpdate
-    )
+//     const updateMeals = meals.map((mealUpdate)=> meals.id === updatedMeals.id ? updatedMeals : mealUpdate
+//     )
 
-    setmeals(updatedMeals);
-  }}
-
+//     setmeals(updatedMeals);
+//   }}
+//   onClick={handleUpdatedMeals}
 
 
   useEffect(() => {
@@ -51,7 +51,7 @@ function MealPlan(meal) {
         meals.map((meal) => (
           <Meal key={meal.id}>
             <Box>
-            <Button variant="outline" onClick={handleUpdatedMeals}>
+            <Button variant="outline">
               EDIT
               </Button>
               <h2>{meal.title}</h2>
